@@ -28,6 +28,7 @@ public class villager_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Gravity();
         hungerTickCount++;
         if (hungerTickCount >= HUNGER_TICK_INCREASE){
             hunger++;
@@ -68,7 +69,24 @@ public class villager_controller : MonoBehaviour
         Wander();
     }
 
+    private void Gravity() {
+        /**
+        make the player follow the terrain every frame
+        TODO: maybe round these to integers to prevent frequent updates?
+        **/
+        RaycastHit hit;
+        int raycastDistance = 10;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance) && transform.position.y != hit.point.y + 1)
+         {
+            // print($"{transform.position} updating from {transform.position.y} to {hit.point.y + 1}");
+            Vector3 pos = transform.position;
+            pos.y = hit.point.y + 1;
+            transform.position = pos;
+         }
+    }
+
     private void Wander(){
+        // TODO: instead of moving either left or right, just pick a new random i <360
         int i = getrandom.Next(1, 500);
         switch(i){
             case 1: //left
@@ -91,9 +109,11 @@ public class villager_controller : MonoBehaviour
 
     private void travelToStorehouse(){
         GameObject storehouse = GameObject.Find("Storehouse");
-        transform.position = Vector3.MoveTowards(transform.position, storehouse.transform.position, Time.deltaTime * VILLAGER_SPEED);
+        Vector3 targetPos = storehouse.transform.position;
+        targetPos.y = transform.position.y;
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * VILLAGER_SPEED);
         
-        if(transform.position == storehouse.transform.position){
+        if(transform.position == targetPos){
             Debug.Log(transform.position);
             Debug.Log(storehouse.transform.position);
             int foodToTake = Math.Min(storehouse.GetComponent<storehouse_controller>().foodCount, hunger);
