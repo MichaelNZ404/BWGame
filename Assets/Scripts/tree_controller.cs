@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class tree_controller : MonoBehaviour
 {
-    private int GROWTH_TICKS_TO_INCREASE_SIZE = 50000;
+    private int GROWTH_TICKS_TO_INCREASE_SIZE = 100;
     public int size = 0;
     private int growthTickCount = 0;
     private static readonly System.Random getrandom = new System.Random();
@@ -17,10 +17,11 @@ public class tree_controller : MonoBehaviour
             growthTickCount++;
             if(growthTickCount >= GROWTH_TICKS_TO_INCREASE_SIZE){
                 size = 1;
+                transform.localScale = new Vector3(2, 2, 2);
             }
         }
         if(size==1){
-            if (getrandom.Next(1, 500) == 1){
+            if (getrandom.Next(1, 500000000) == 1){
                 GameObject tree = GameObject.Find("Tree");
                 Vector3 spawnloc = new Vector3(
                     transform.position.x + getrandom.Next(1, 5),

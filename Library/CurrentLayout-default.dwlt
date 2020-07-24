@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1904
     height: 981
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 542}
   m_MaxSize: {x: 10000, y: 10000}
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_MinSize: {x: 709, y: 492}
   m_MaxSize: {x: 18004, y: 14042}
   vertical: 0
-  controlID: 85
+  controlID: 110
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 232, y: 492}
   m_MaxSize: {x: 10002, y: 14042}
   vertical: 1
-  controlID: 47
+  controlID: 72
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -321,9 +321,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 64.034584, y: -80.688, z: -70.99641}
+    m_Target: {x: -11.713245, y: 1.5121441, z: -79.89796}
     speed: 2
-    m_Value: {x: 64.034584, y: -80.688, z: -70.99641}
+    m_Value: {x: -11.713245, y: 1.5121441, z: -79.89796}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -370,13 +370,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.31389496, y: 0.63989854, z: -0.32251716, w: 0.6229171}
+    m_Target: {x: 0.40438852, y: 0.38244098, z: -0.19134112, w: 0.8084801}
     speed: 2
-    m_Value: {x: 0.31482214, y: 0.63940024, z: -0.3234697, w: 0.6224322}
+    m_Value: {x: 0.40437987, y: 0.38243282, z: -0.19133703, w: 0.80846286}
   m_Size:
-    m_Target: 75.18853
+    m_Target: 18.350174
     speed: 2
-    m_Value: 75.18853
+    m_Value: 18.350174
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -547,21 +547,21 @@ MonoBehaviour:
   m_ViewDataDictionary: {fileID: 0}
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 46420000
-      m_LastClickedID: 16966
-      m_ExpandedIDs: 28fbffff3efbffff5efbffff20420000
+      scrollPos: {x: 0, y: 144}
+      m_SelectedIDs: 0a420000
+      m_LastClickedID: 16906
+      m_ExpandedIDs: f82efbff3efbffff5efbfffff4ffffff2a4200009a420000c2420000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Main Camera
-        m_OriginalName: Main Camera
+        m_Name: Villager
+        m_OriginalName: Villager
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 16970
+        m_UserData: 16952
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
         m_OriginalEventType: 0
@@ -625,9 +625,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e0430000
-    m_LastClickedID: 17376
-    m_ExpandedIDs: 00000000ce43000000ca9a3b
+    m_SelectedIDs: d6430000
+    m_LastClickedID: 17366
+    m_ExpandedIDs: 00000000c043000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -655,7 +655,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ce430000
+    m_ExpandedIDs: 00000000c0430000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -686,15 +686,15 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: villager_controller
-      m_OriginalName: villager_controller
+      m_Name: abode_controller
+      m_OriginalName: abode_controller
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 12578
+      m_UserData: 20282
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0

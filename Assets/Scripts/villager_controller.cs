@@ -6,16 +6,27 @@ using UnityEngine;
 public class villager_controller : MonoBehaviour
 {
     private int VILLAGER_SPEED = 5;
-    private int HUNGER_TICK_INCREASE = 50;
-    private int CARRY_AMOUNT = 5;
-
+    private int CARRY_AMOUNT = 50;
     private static readonly System.Random getrandom = new System.Random();
-    public string currentTask = "Idle";
+
+    public GameObject home;
+    public string currentStatus = "Idle";
+
+    public float health = 100f;
+    private static float STARVING_HEALTH_TICK = 1E-3f;
+    private static float SLEEP_DEPREVATION_HEALTH_TICK = 1E-2f;
+    private static float HOMELESS_SLEEP_TICK = 1E-4f;
+
+
+    public float sleep = 100f;
+    private static float SLEEP_TICK = 1E-3f;
+    private static float SLEEP_RECOVERY_HOME_TICK = 1E-2f;
+    private static float SLEEP_RECOVERY_HOMELESS_TICK = 1E-3f;
     
-    public int hunger = 0;
-    private int hungerTickCount = 0;
+    public float hunger = 0f;
+    private static float HUNGER_TICK = 1E-8f;
     
-    public string holding;
+    public string holding = "Nothing"; // Nothing | Food | Wood
     public int holdingAmount = 0;
 
 
@@ -29,43 +40,73 @@ public class villager_controller : MonoBehaviour
     void Update()
     {
         Gravity();
-        hungerTickCount++;
-        if (hungerTickCount >= HUNGER_TICK_INCREASE){
-            hunger++;
-            hungerTickCount=0;
+        if (health <= 0) {
+            currentStatus = "Dead";
+            return;
         }
 
+        sleep -= SLEEP_TICK;
+        hunger += HUNGER_TICK;
         if (hunger >= 99){
-            currentTask="Starving";
+            health -= STARVING_HEALTH_TICK;
+        }
+        if (sleep <= 0) {
+            health -= SLEEP_DEPREVATION_HEALTH_TICK;
+        }
+
+        // hauling action end
+        if(holding != "Nothing"){
+            currentStatus="Depositing Resources";
+            travelToStorehouse();
             return;
         }
 
-        if(holding != null){
-            currentTask="Depositing Resources";
-            travelToStorehouse();
-        }
-
+        // hungry action end
         if (hunger >= 50 && storehouseHasFood()){
-            currentTask="Going to Eat";
+            currentStatus="Going to Eat";
             travelToStorehouse();
             return;
         }
 
+        // tired action end
+        if (sleep <= 50){
+            if (home) {
+                currentStatus = "Going home";
+                // TODO: travelHome();
+                sleep += SLEEP_RECOVERY_HOME_TICK;
+                return;
+            } else {
+                currentStatus = "Sleeping on floor";
+                health -= HOMELESS_SLEEP_TICK;
+                sleep += SLEEP_RECOVERY_HOMELESS_TICK;
+                return;
+            }
+        }
+
+        // TODO: this is where we would do diciple actions, breed/farm/wc/etc based on nature
+        // for now we just farm by default
         GameObject farmland = GameObject.Find("Farmland");
-        if(farmland.GetComponent<farmland_controller>().foodCount > 10){
-            currentTask="Collecting Food";
-            harvestFromFarmland();
+        if(farmland.GetComponent<farmland_controller>().foodCount > 0){
+            currentStatus="Harvesting Crop";
+            interactWithFarmland();
+            return;
+        }
+        if(farmland.GetComponent<farmland_controller>().sown_percent < 100f){
+            currentStatus="Sowing Field";
+            interactWithFarmland();
+            return;
         }
 
 
-
-        int task  = getrandom.Next(1, 500);  // creates a number between 1 and 12
-        if (task==20){
-            currentTask="foobar";
-        }
-        else if (task==400){
-            currentTask="idle";
-        }
+        // Non-diciples, or tired people can now rest
+        // int task  = getrandom.Next(1, 500);  // creates a number between 1 and 12
+        // if (task==20){
+        //     currentStatus="foobar";
+        // }
+        // else if (task==400){
+            currentStatus="idle";
+            // return;
+        // }
         Wander();
     }
 
@@ -116,11 +157,11 @@ public class villager_controller : MonoBehaviour
         if(transform.position == targetPos){
             Debug.Log(transform.position);
             Debug.Log(storehouse.transform.position);
-            int foodToTake = Math.Min(storehouse.GetComponent<storehouse_controller>().foodCount, hunger);
+            int foodToTake = Math.Min(storehouse.GetComponent<storehouse_controller>().foodCount, (int) Math.Floor(hunger));
             storehouse.GetComponent<storehouse_controller>().foodCount -= foodToTake;
             hunger -= foodToTake;
 
-            if(holding != null){
+            if(holding != "Nothing"){
                 switch(holding){
                     case "food":
                         storehouse.GetComponent<storehouse_controller>().foodCount += holdingAmount;
@@ -130,20 +171,26 @@ public class villager_controller : MonoBehaviour
                         break;
                 }
                 holdingAmount = 0;
-                holding = null;
+                holding = "Nothing";
             }
         }
     }
 
-    private void harvestFromFarmland(){
+    private void interactWithFarmland(){
         GameObject farmland = GameObject.Find("Farmland");
-        transform.position = Vector3.MoveTowards(transform.position, farmland.transform.position, Time.deltaTime * VILLAGER_SPEED);
-        // Debug.Log(farmland.transform.position);
-        if(transform.position == farmland.transform.position){
-            int foodToTake = Math.Min(farmland.GetComponent<farmland_controller>().foodCount, CARRY_AMOUNT);
-            farmland.GetComponent<farmland_controller>().foodCount -= foodToTake;
-            holding="food";
-            holdingAmount=foodToTake;
+        Vector3 targetPos = farmland.transform.position;
+        targetPos.y = transform.position.y;
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * VILLAGER_SPEED);
+        if(transform.position == targetPos){
+            if(farmland.GetComponent<farmland_controller>().foodCount > 0){
+                holding="food";
+                holdingAmount=farmland.GetComponent<farmland_controller>().harvestCrops(CARRY_AMOUNT);
+                return;
+            }
+            if(farmland.GetComponent<farmland_controller>().sown_percent < 100f){
+                farmland.GetComponent<farmland_controller>().sowCrops();
+                return;
+            }
         }
     }
 }

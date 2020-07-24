@@ -56,12 +56,13 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\storehouse_controller.cs" />
-     <Compile Include="Assets\Scripts\influenceShaderScript.cs" />
      <Compile Include="Assets\Scripts\camera_controller.cs" />
      <Compile Include="Assets\Scripts\villager_controller.cs" />
      <Compile Include="Assets\Scripts\farmland_controller.cs" />
      <Compile Include="Assets\Scripts\citycentre_controller.cs" />
      <Compile Include="Assets\Scripts\tree_controller.cs" />
+     <Compile Include="Assets\Scripts\temple_controller.cs" />
+     <Compile Include="Assets\Scripts\abode_controller.cs" />
  <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
  <HintPath>C:/Users/Michael/MyFirstGame/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
  </Reference>
