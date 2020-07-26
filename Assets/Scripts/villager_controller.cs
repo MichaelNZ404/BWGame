@@ -39,7 +39,7 @@ public class villager_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Gravity();
+        // Gravity();
         if (health <= 0) {
             currentStatus = "Dead";
             return;
@@ -155,8 +155,8 @@ public class villager_controller : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * VILLAGER_SPEED);
         
         if(transform.position == targetPos){
-            Debug.Log(transform.position);
-            Debug.Log(storehouse.transform.position);
+            // Debug.Log(transform.position);
+            // Debug.Log(storehouse.transform.position);
             int foodToTake = Math.Min(storehouse.GetComponent<storehouse_controller>().foodCount, (int) Math.Floor(hunger));
             storehouse.GetComponent<storehouse_controller>().foodCount -= foodToTake;
             hunger -= foodToTake;
