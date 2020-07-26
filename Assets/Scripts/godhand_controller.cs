@@ -55,8 +55,14 @@ public class godhand_controller : MonoBehaviour {
     https://strategywiki.org/wiki/Black_%26_White/Controls
     */
     float ZOOM_SPEED = 5000f;
+    float ZOOM_MIN_CLAMP = 5f;
+    float ZOOM_MAX_CLAMP = 300f;
+
     float MOVE_SPEED = 2f;
     float ROTATE_SPEED = .6f;
+    float PIVOT_MIN_CLAMP = 5f;
+    float PIVOT_MAX_CLAMP = 85f;
+
     float MOUSE_AXIS_SENSITIVITY = 0.1f;
 
     public GameObject GodHandObject;  
@@ -80,10 +86,15 @@ public class godhand_controller : MonoBehaviour {
                 transform.RotateAround(GodHandObject.transform.position, new Vector3(0, -1, 0), Time.deltaTime * ROTATE_SPEED * 500);
             }
             if (Input.GetAxis("Mouse Y") < -MOUSE_AXIS_SENSITIVITY) { //pitch down
-                transform.RotateAround(GodHandObject.transform.position, transform.right, Time.deltaTime * -ROTATE_SPEED * 500);
+
+                if (transform.localEulerAngles.x > PIVOT_MIN_CLAMP) {
+                    transform.RotateAround(GodHandObject.transform.position, transform.right, Time.deltaTime * -ROTATE_SPEED * 500);
+                }
             }
             if (Input.GetAxis("Mouse Y") > MOUSE_AXIS_SENSITIVITY) { //pitch up
-                transform.RotateAround(GodHandObject.transform.position, transform.right, Time.deltaTime * ROTATE_SPEED * 500);
+                if (transform.localEulerAngles.x < PIVOT_MAX_CLAMP) {
+                    transform.RotateAround(GodHandObject.transform.position, transform.right, Time.deltaTime * ROTATE_SPEED * 500);
+                }
             }
         }
         else if (Input.GetMouseButton(0) && Input.GetMouseButton(1)) { // both mouse down / zoom
@@ -93,7 +104,7 @@ public class godhand_controller : MonoBehaviour {
             // TODO: use godhand to lock movement inside of screen
             Vector3 p = GetMouseAxisMovement();
             Vector3 newPosition = transform.position;
-            transform.Translate(p);
+            transform.Translate(p); //TODO: fix the speed of forward movement at different heights
             newPosition.x = transform.position.x;
             newPosition.z = transform.position.z;
             transform.position = newPosition;
@@ -102,10 +113,16 @@ public class godhand_controller : MonoBehaviour {
             // TODO: implement actions
         }
         else if (Input.GetAxis("Mouse ScrollWheel") > 0f ) { // scroll up / zoom in
-            transform.position = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * ZOOM_SPEED);
+            Vector3 newVector = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * ZOOM_SPEED);
+            if (newVector.y > ZOOM_MIN_CLAMP) {
+                transform.position = newVector;
+            } 
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f ) { // scroll down / zoom out
-            transform.position = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * -ZOOM_SPEED);
+            Vector3 newVector = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * -ZOOM_SPEED);
+            if (newVector.y < ZOOM_MAX_CLAMP) {
+                transform.position = newVector;
+            } 
         }
         else {
             positionGodHand();
