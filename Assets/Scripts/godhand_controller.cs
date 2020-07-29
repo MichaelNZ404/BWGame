@@ -7,8 +7,6 @@ public class godhand_controller : MonoBehaviour {
     /* 
     Godhand controller, replicating movement seen in Lionhead's Black & White series. 
     https://strategywiki.org/wiki/Black_%26_White/Controls
-
-    // TODO: set godhand emission
     */
     float ZOOM_SPEED = 5000f;
     float ZOOM_MIN_CLAMP = 5f;
@@ -96,8 +94,7 @@ public class godhand_controller : MonoBehaviour {
             else {
                 RaycastHit hitInfo = new RaycastHit();
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo) && hitInfo.transform.tag == "Grabable") {
-                    holding = hitInfo.collider.gameObject; 
-                    // holding.GetComponent<Rigidbody>().useGravity = false;
+                    holding = hitInfo.collider.gameObject;
                     holding.GetComponent<Rigidbody>().isKinematic = true;
                     holding.GetComponent<Collider>().enabled = false;
                     holding.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -122,7 +119,6 @@ public class godhand_controller : MonoBehaviour {
     }
 
     private Vector3 GetMouseAxisMovement() {
-        //TODO use proximity to GodHand control speed
         Vector3 p_Velocity = new Vector3();
         if (Input.GetAxis("Mouse Y") < -MOUSE_AXIS_SENSITIVITY) { //forward
             p_Velocity += new Vector3(0, 0, MOVE_SPEED);
@@ -154,7 +150,6 @@ public class godhand_controller : MonoBehaviour {
     }
     private void positionGodHand() {
         isCastedDown = false;
-        /* raycast from camera to position GodHand on ground. */
         RaycastHit hitInfo = new RaycastHit();
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo)) {
             float step = Math.Min(MAX_GODHAND_DISTANCE, hitInfo.distance);
