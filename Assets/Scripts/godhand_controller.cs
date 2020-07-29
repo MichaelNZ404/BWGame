@@ -74,12 +74,16 @@ public class godhand_controller : MonoBehaviour {
         }
         else if (Input.GetMouseButton(0)) { //left mouse down / grab land
             // TODO: use godhand to lock movement inside of screen
+            // TODO: incorporate mouse axis speed as movement multiplier 
             Vector3 p = GetMouseAxisMovement();
+            Quaternion oldRotation = transform.rotation;
             Vector3 newPosition = transform.position;
-            transform.Translate(p); //TODO: fix the speed of forward movement at different heights
+            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, transform.eulerAngles.z); //rotate to flatten x axis so that we calculate correct 2D movement irrespective of camera tilt.
+            transform.Translate(p);
             newPosition.x = transform.position.x;
             newPosition.z = transform.position.z;
             transform.position = newPosition;
+            transform.rotation = oldRotation;
         }
         else if (Input.GetMouseButtonDown(1)) { // right mouse down / action
             if (holding) {

@@ -1,11 +1,16 @@
 
 # TODO: 
-- godhand movespeed is really slow when camera is directly over head
+- Godhand move speed should use mouse axis distance as speed multi.
 - pick up items with right click, throwing etc (cast down correctly, apply velocity of mouse movement)
 - miracles
 - lock actions to inside influence
-- fix influence generartion
+- fix influence generation
 - create new buildings (workshop mechanic)
+- (re)create various low poly models
+
+## Bugs 
+- items in god hand clip through terrain
+- camera clipping with terrain still has issues (rotation into mountains and zooming through terrain)
 
 # NOTES: 
 ## DRAG FORWARD
@@ -53,3 +58,6 @@
 ## Won't do (for now)
 - left and right click zoom mode
 - edge of screen rotate + pivot
+
+## Fixed
+- godhand movespeed is really slow when camera is directly over head 
