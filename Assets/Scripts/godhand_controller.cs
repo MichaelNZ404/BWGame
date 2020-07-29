@@ -2,52 +2,6 @@
 using UnityEngine.UI;
 using System;
 
-
-/*
-NOTES: 
-
-DRAG FORWARD
-god hand is locked to screen edges which prevents drag from going past hand
-
-ROTATE AND PITCH:
-middle click rotate and pitch is centered on god hand
-edge of screen rotate and pitch are camera only
-
-GAMEPLAY:
-god hand has maximum distance from camera, just raycast through for target.
-no maximum range for grab, just becomes difficult to see
-detail decreases with zoom, influence ring should be visible from space.
-hard bounding box around island.
-ability to show info next to god hand (eg zoom with mouse icon, or the amount of wood being picked up)
-press S for villager debug info, has range (same as godhand?) NAME|ACTION|AGE LIFE FOOD
-double click terrain to fly over and zoom (with wind sounds)
-throwing projectiles with respect to perspective
-temple has enterance, creature pen, and worship sites
-
-MIRACLES:
-
-SOUNDS:
-soft thud when grabbing terrain
-wind when high up.
-villagers laughing etc
-water noise when near ocean
-birds when near ground
-animal sounds
-footsteps of villagers
-rock rolling sound
-
-COOL FEATRURES:
-challenge room in temple / challenges.
-creature cave
-gods playground
-small map in center of temple
-
-CREATURE:
-discipline/pretting
-leashes
-AI
-*/
-
 public class godhand_controller : MonoBehaviour {
  
     /* 
@@ -68,15 +22,27 @@ public class godhand_controller : MonoBehaviour {
     float MOUSE_AXIS_SENSITIVITY = 0.1f;
 
     public float MAX_GODHAND_DISTANCE = 50f;
+    public float GODLIGHT_HEIGHT_OFFSET = 10f;
+    public float GODHAND_HEIGHT_OFFSET = 2f;
 
     bool isCastedDown = false;
 
+    public GameObject holding;
     public GameObject GodHandObject;  
+    public GameObject GodLight;
     
      void Start(){
         Cursor.visible = false;
         // Cursor.lockState = CursorLockMode.Confined;
         // Cursor.lockState = CursorLockMode.None;
+
+        GodLight = new GameObject("Point Light");
+        Light lightComp = GodLight.AddComponent<Light>();
+        lightComp.transform.position = new Vector3(GodHandObject.transform.position.x, GodHandObject.transform.position.y + GODLIGHT_HEIGHT_OFFSET, GodHandObject.transform.position.z);
+        GodLight.transform.parent = GodHandObject.transform;
+        
+        lightComp.range = 100;
+        lightComp.intensity = 150;
     }
 
     void Update () {
@@ -106,9 +72,6 @@ public class godhand_controller : MonoBehaviour {
                 }
             }
         }
-        else if (Input.GetMouseButton(0) && Input.GetMouseButton(1)) { // both mouse down / zoom
-            // TODO: support double mouse click zoom
-        }
         else if (Input.GetMouseButton(0)) { //left mouse down / grab land
             // TODO: use godhand to lock movement inside of screen
             Vector3 p = GetMouseAxisMovement();
@@ -118,12 +81,24 @@ public class godhand_controller : MonoBehaviour {
             newPosition.z = transform.position.z;
             transform.position = newPosition;
         }
-        else if (Input.GetMouseButton(1)) { // right mouse down / action"
-            // TODO: implement actions
-            RaycastHit hitInfo = new RaycastHit();
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo) && hitInfo.transform.tag == "Grabable") {
-                print($"I want to pick up {hitInfo.transform.ToString()}"); 
-            } 
+        else if (Input.GetMouseButtonDown(1)) { // right mouse down / action
+            if (holding) {
+                Vector3 forceVector = new Vector3(100,-100,100);
+                holding.GetComponent<Collider>().enabled = true;
+                holding.GetComponent<Rigidbody>().isKinematic = false;
+                holding.GetComponent<Rigidbody>().AddForce(forceVector*5);
+                holding = null;
+            }
+            else {
+                RaycastHit hitInfo = new RaycastHit();
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo) && hitInfo.transform.tag == "Grabable") {
+                    holding = hitInfo.collider.gameObject; 
+                    // holding.GetComponent<Rigidbody>().useGravity = false;
+                    holding.GetComponent<Rigidbody>().isKinematic = true;
+                    holding.GetComponent<Collider>().enabled = false;
+                    holding.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                }
+            }
         }
         else if (Input.GetAxis("Mouse ScrollWheel") > 0f ) { // scroll up / zoom in
             Vector3 newVector = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * ZOOM_SPEED);
@@ -166,6 +141,10 @@ public class godhand_controller : MonoBehaviour {
             RaycastHit hitInfo = new RaycastHit();
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo)) {
                 GodHandObject.transform.position = hitInfo.point;
+                GodLight.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + GODLIGHT_HEIGHT_OFFSET, hitInfo.point.z);
+                if (holding) {
+                    holding.transform.position = GodHandObject.transform.position;
+                }
             }
         }
     }
@@ -176,6 +155,10 @@ public class godhand_controller : MonoBehaviour {
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo)) {
             float step = Math.Min(MAX_GODHAND_DISTANCE, hitInfo.distance);
             GodHandObject.transform.position = Vector3.MoveTowards(transform.position, hitInfo.point, step);
-        } 
+            GodLight.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + GODLIGHT_HEIGHT_OFFSET, hitInfo.point.z);
+            if (holding) {
+                holding.transform.position = GodHandObject.transform.position;
+            }
+        }
     }
 }
