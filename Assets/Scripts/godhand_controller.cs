@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System;
 
 
 /*
@@ -53,6 +53,8 @@ public class godhand_controller : MonoBehaviour {
     /* 
     Godhand controller, replicating movement seen in Lionhead's Black & White series. 
     https://strategywiki.org/wiki/Black_%26_White/Controls
+
+    // TODO: set godhand emission
     */
     float ZOOM_SPEED = 5000f;
     float ZOOM_MIN_CLAMP = 5f;
@@ -64,6 +66,10 @@ public class godhand_controller : MonoBehaviour {
     float PIVOT_MAX_CLAMP = 85f;
 
     float MOUSE_AXIS_SENSITIVITY = 0.1f;
+
+    public float MAX_GODHAND_DISTANCE = 50f;
+
+    bool isCastedDown = false;
 
     public GameObject GodHandObject;  
     
@@ -78,6 +84,9 @@ public class godhand_controller : MonoBehaviour {
     }
 
     private void handleMouseClick(){
+        if (Input.GetMouseButton(2) || Input.GetMouseButton(1) || Input.GetMouseButton(0)) {
+            castGodHandDown();
+        }
         if (Input.GetMouseButton(2)) { //middle mouse down / rotate and pitch 
             if (Input.GetAxis("Mouse X") > MOUSE_AXIS_SENSITIVITY) { //rotate left
                 transform.RotateAround(GodHandObject.transform.position, new Vector3(0, 1, 0), Time.deltaTime * ROTATE_SPEED *500);
@@ -111,6 +120,10 @@ public class godhand_controller : MonoBehaviour {
         }
         else if (Input.GetMouseButton(1)) { // right mouse down / action"
             // TODO: implement actions
+            RaycastHit hitInfo = new RaycastHit();
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo) && hitInfo.transform.tag == "Grabable") {
+                print($"I want to pick up {hitInfo.transform.ToString()}"); 
+            } 
         }
         else if (Input.GetAxis("Mouse ScrollWheel") > 0f ) { // scroll up / zoom in
             Vector3 newVector = Vector3.MoveTowards(transform.position, GodHandObject.transform.position, Time.deltaTime * ZOOM_SPEED);
@@ -147,12 +160,22 @@ public class godhand_controller : MonoBehaviour {
         return p_Velocity;
     }
 
+    private void castGodHandDown() {
+        if (isCastedDown == false) {
+            isCastedDown = true;
+            RaycastHit hitInfo = new RaycastHit();
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo)) {
+                GodHandObject.transform.position = hitInfo.point;
+            }
+        }
+    }
     private void positionGodHand() {
+        isCastedDown = false;
         /* raycast from camera to position GodHand on ground. */
-        // TODO: sex maximum godhand distance
         RaycastHit hitInfo = new RaycastHit();
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo)) {
-            GodHandObject.transform.position = hitInfo.point; 
+            float step = Math.Min(MAX_GODHAND_DISTANCE, hitInfo.distance);
+            GodHandObject.transform.position = Vector3.MoveTowards(transform.position, hitInfo.point, step);
         } 
     }
 }
