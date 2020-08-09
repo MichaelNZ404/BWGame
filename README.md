@@ -2,6 +2,9 @@
 # TODO: 
 - Godhand move speed should use mouse axis distance as speed multi.
 - pick up items with right click, throwing etc (cast down correctly, apply velocity of mouse movement)
+- text underneath godhand for pickup/interaction text
+- villager status text boxes
+- game menu
 - miracles
 - lock actions to inside influence
 - fix influence generation
@@ -18,11 +21,11 @@
 
 ## ROTATE AND PITCH:
 - middle click rotate and pitch is centered on god hand
-- edge of screen rotate and pitch are camera only
+- edge of screen rotate and pitch are camera only (won't do)
 
 ## GAMEPLAY:
-- god hand has maximum distance from camera, just raycast through for target.
-- no maximum range for grab, just becomes difficult to see
+- god hand has maximum distance from camera, just raycast through for target. (done)
+- no maximum range for grab, just becomes difficult to see (done)
 - detail decreases with zoom, influence ring should be visible from space.
 - hard bounding box around island.
 - ability to show info next to god hand (eg zoom with mouse icon, or the amount of wood being picked up)
