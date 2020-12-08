@@ -10,6 +10,7 @@
 - fix influence generation
 - create new buildings (workshop mechanic)
 - (re)create various low poly models
+- set maximum distance camera can travel from center
 
 ## Bugs 
 - items in god hand clip through terrain
