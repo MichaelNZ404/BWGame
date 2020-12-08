@@ -11,6 +11,7 @@
 - create new buildings (workshop mechanic)
 - (re)create various low poly models
 - set maximum distance camera can travel from center
+- increase horizontal movement speed based on how high the camera is from ground
 
 ## Bugs 
 - items in god hand clip through terrain
