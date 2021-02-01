@@ -1,1 +1,1 @@
-C# Unity game experiment based off Black & White 1
+C# Unity project based on B&W 1
